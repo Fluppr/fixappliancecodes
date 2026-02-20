@@ -110,6 +110,7 @@ function layout({ title, description, canonicalPath, content, jsonLd = [] }) {
     <meta property="og:type" content="website" />
     <meta property="og:url" content="${canonicalUrl}" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8545823582417489" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="/assets/styles.css" />
     ${ldScripts}
   </head>
