@@ -1,6 +1,6 @@
-# FixSignal
+# FixApplianceCodes.com
 
-FixSignal is a static site generator for an ad-optimized appliance/device error code troubleshooting website.
+FixApplianceCodes.com is a static site generator for an ad-optimized appliance/device error code troubleshooting website.
 
 ## Features
 - Programmatic generation of hundreds of troubleshooting pages

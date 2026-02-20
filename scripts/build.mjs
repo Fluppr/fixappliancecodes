@@ -4,7 +4,7 @@ import { resolve } from "node:path";
 const distDir = resolve("dist");
 const dataPath = resolve("data/error-codes.json");
 const cssPath = resolve("src/styles.css");
-const baseUrl = (process.env.SITE_URL || "https://fixsignal.example.com").replace(/\/$/, "");
+const baseUrl = (process.env.SITE_URL || "https://fixappliancecodes.com").replace(/\/$/, "");
 
 if (!existsSync(dataPath)) {
   throw new Error("Missing data/error-codes.json. Run `npm run seed` first.");
@@ -57,7 +57,7 @@ function nav() {
   return `
     <header class="site">
       <div class="wrap nav">
-        <a class="brand" href="/">FixSignal</a>
+        <a class="brand" href="/">FixApplianceCodes.com</a>
         <nav class="nav-links">
           <a href="/">Home</a>
           <a href="/brands">Brands</a>
@@ -81,7 +81,7 @@ function footer() {
           <a href="/editorial-policy">Editorial Policy</a>
           <a href="/contact">Contact</a>
         </div>
-        <small>© 2026 FixSignal · Troubleshooting guidance only. Always follow official safety manuals.</small>
+        <small>© 2026 FixApplianceCodes.com · Troubleshooting guidance only. Always follow official safety manuals.</small>
       </div>
     </footer>
   `;
@@ -131,7 +131,7 @@ const searchIndex = entries.map((entry) => ({
 writeFileSync(resolve("dist/search-index.json"), JSON.stringify(searchIndex));
 
 const homeHtml = layout({
-  title: "FixSignal — Appliance Error Code Fix Guides",
+  title: "FixApplianceCodes.com — Appliance Error Code Fix Guides",
   description:
     "Find model-specific appliance error code fixes in seconds. High-intent troubleshooting pages for washers, dishwashers, dryers, AC units, refrigerators, and ovens.",
   canonicalPath: "/",
@@ -284,7 +284,7 @@ const homeHtml = layout({
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
-      name: "FixSignal",
+      name: "FixApplianceCodes.com",
       url: `${baseUrl}/`,
       potentialAction: {
         "@type": "SearchAction",
@@ -408,7 +408,7 @@ for (const entry of entries) {
         dateModified: entry.updatedAt,
         author: {
           "@type": "Organization",
-          name: "FixSignal Editorial Team"
+          name: "FixApplianceCodes.com Editorial Team"
         },
         mainEntityOfPage: `${baseUrl}/${entry.slug}`
       },
@@ -520,11 +520,11 @@ function simplePage({ path, title, body }) {
 
 simplePage({
   path: "about",
-  title: "About FixSignal",
+  title: "About FixApplianceCodes.com",
   body: `
-    <p>FixSignal publishes structured troubleshooting guides for appliance and device error codes.</p>
+    <p>FixApplianceCodes.com publishes structured troubleshooting guides for appliance and device error codes.</p>
     <p>Our goal is to help users identify likely causes quickly and choose a safe next action.</p>
-    <p>FixSignal is ad-supported. Ads never alter troubleshooting recommendations.</p>
+    <p>FixApplianceCodes.com is ad-supported. Ads never alter troubleshooting recommendations.</p>
   `
 });
 
@@ -532,7 +532,7 @@ simplePage({
   path: "editorial-policy",
   title: "Editorial Policy",
   body: `
-    <p>FixSignal content is generated from structured technical templates and reviewed for clarity, consistency, and safety wording.</p>
+    <p>FixApplianceCodes.com content is generated from structured technical templates and reviewed for clarity, consistency, and safety wording.</p>
     <p>We avoid copying manufacturer text verbatim and provide generalized troubleshooting pathways.</p>
     <p>High-risk guidance includes explicit stop conditions and a recommendation to seek licensed service.</p>
     <p>Update cadence: data is refreshed in periodic release batches with versioned build output.</p>
@@ -553,7 +553,7 @@ simplePage({
   path: "terms",
   title: "Terms of Use",
   body: `
-    <p>FixSignal provides informational troubleshooting content only and does not provide warranties of repair outcomes.</p>
+    <p>FixApplianceCodes.com provides informational troubleshooting content only and does not provide warranties of repair outcomes.</p>
     <p>Always follow official manufacturer safety instructions and local electrical/mechanical codes.</p>
     <p>You are responsible for your own repair decisions and actions.</p>
   `
@@ -563,14 +563,14 @@ simplePage({
   path: "contact",
   title: "Contact",
   body: `
-    <p>Email: hello@fixsignal.example</p>
+    <p>Email: flip2dip@gmail.com</p>
     <p>For urgent repair and safety issues, contact a licensed technician immediately.</p>
   `
 });
 
 const brandsPage = layout({
   title: "All Brands",
-  description: "Browse all brands available on FixSignal.",
+  description: "Browse all brands available on FixApplianceCodes.com.",
   canonicalPath: "/brands",
   content: `<main class="wrap"><section class="hero card"><h1>All brands</h1><ul class="list">${Object.keys(byBrand)
     .sort()
@@ -581,7 +581,7 @@ writePage("brands", brandsPage);
 
 const appliancesPage = layout({
   title: "All Appliances",
-  description: "Browse all appliance categories available on FixSignal.",
+  description: "Browse all appliance categories available on FixApplianceCodes.com.",
   canonicalPath: "/appliances",
   content: `<main class="wrap"><section class="hero card"><h1>All appliances</h1><ul class="list">${Object.keys(byAppliance)
     .sort()
