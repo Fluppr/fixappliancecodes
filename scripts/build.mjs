@@ -77,7 +77,9 @@ function footer() {
         <div class="links">
           <a href="/about">About</a>
           <a href="/privacy">Privacy</a>
+          <a href="/cookies">Cookies</a>
           <a href="/terms">Terms</a>
+          <a href="/disclaimer">Disclaimer</a>
           <a href="/editorial-policy">Editorial Policy</a>
           <a href="/contact">Contact</a>
         </div>
@@ -153,8 +155,8 @@ const homeHtml = layout({
           <ul id="results" class="list"></ul>
         </div>
         <aside>
-          <div class="ad-slot">Ad slot (300x250)</div>
-          <div class="ad-slot tall" style="margin-top:1rem;">Ad slot (300x600)</div>
+          <div class="ad-slot">Advertisement</div>
+          <div class="ad-slot tall" style="margin-top:1rem;">Advertisement</div>
         </aside>
       </section>
 
@@ -179,7 +181,7 @@ const homeHtml = layout({
             </ul>
           </div>
         </div>
-        <div class="ad-slot banner">Ad slot (728x90)</div>
+        <div class="ad-slot banner">Advertisement</div>
       </section>
     </main>
 
@@ -375,7 +377,7 @@ for (const entry of entries) {
           </article>
 
           <aside>
-            <div class="ad-slot">Ad slot (300x250)</div>
+            <div class="ad-slot">Advertisement</div>
             <div class="card" style="margin-top:1rem;">
               <h3>Related pages</h3>
               <ul class="list">
@@ -394,7 +396,7 @@ for (const entry of entries) {
                   .join("")}
               </ul>
             </div>
-            <div class="ad-slot tall" style="margin-top:1rem;">Ad slot (300x600)</div>
+            <div class="ad-slot tall" style="margin-top:1rem;">Advertisement</div>
           </aside>
         </section>
       </main>
@@ -457,8 +459,8 @@ for (const [brandSlug, items] of Object.entries(byBrand)) {
             </ul>
           </div>
           <aside>
-            <div class="ad-slot">Ad slot (300x250)</div>
-            <div class="ad-slot tall" style="margin-top:1rem;">Ad slot (300x600)</div>
+            <div class="ad-slot">Advertisement</div>
+            <div class="ad-slot tall" style="margin-top:1rem;">Advertisement</div>
           </aside>
         </section>
       </main>
@@ -495,8 +497,8 @@ for (const [applianceSlug, items] of Object.entries(byAppliance)) {
             </ul>
           </div>
           <aside>
-            <div class="ad-slot">Ad slot (300x250)</div>
-            <div class="ad-slot tall" style="margin-top:1rem;">Ad slot (300x600)</div>
+            <div class="ad-slot">Advertisement</div>
+            <div class="ad-slot tall" style="margin-top:1rem;">Advertisement</div>
           </aside>
         </section>
       </main>
@@ -545,7 +547,18 @@ simplePage({
   body: `
     <p>We collect basic analytics and ad delivery telemetry to operate and improve the website.</p>
     <p>Third-party advertising partners may use cookies or similar technologies subject to their own policies.</p>
+    <p>We do not sell personal data directly. For ad technology and consent controls, see our cookie policy.</p>
     <p>Contact us to request data access or deletion requests where applicable.</p>
+  `
+});
+
+simplePage({
+  path: "cookies",
+  title: "Cookie Policy",
+  body: `
+    <p>FixApplianceCodes.com uses cookies and similar technologies for site functionality, analytics, and advertising.</p>
+    <p>Advertising partners may use cookies to show more relevant ads and measure campaign performance.</p>
+    <p>You can control cookies from your browser settings and applicable consent prompts provided by your region.</p>
   `
 });
 
@@ -556,6 +569,16 @@ simplePage({
     <p>FixApplianceCodes.com provides informational troubleshooting content only and does not provide warranties of repair outcomes.</p>
     <p>Always follow official manufacturer safety instructions and local electrical/mechanical codes.</p>
     <p>You are responsible for your own repair decisions and actions.</p>
+  `
+});
+
+simplePage({
+  path: "disclaimer",
+  title: "Disclaimer",
+  body: `
+    <p>Content on FixApplianceCodes.com is provided for general informational purposes only.</p>
+    <p>We are not the manufacturer of listed products and do not provide licensed repair, legal, or safety certification services.</p>
+    <p>Always consult official manuals and qualified technicians before attempting repairs involving electricity, gas, heat, or water systems.</p>
   `
 });
 
@@ -597,7 +620,9 @@ const allPaths = [
   "/",
   "/about",
   "/privacy",
+  "/cookies",
   "/terms",
+  "/disclaimer",
   "/contact",
   "/editorial-policy",
   "/brands",
@@ -618,6 +643,10 @@ ${allPaths
 
 writeFileSync(resolve("dist/sitemap.xml"), sitemap);
 writeFileSync(resolve("dist/robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${baseUrl}/sitemap.xml\n`);
+writeFileSync(
+  resolve("dist/ads.txt"),
+  "# Add your ads.txt lines after AdSense approval, e.g.\n# google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0\n"
+);
 writeFileSync(
   resolve("dist/404.html"),
   layout({
