@@ -5,6 +5,7 @@ const distDir = resolve("dist");
 const dataPath = resolve("data/error-codes.json");
 const cssPath = resolve("src/styles.css");
 const baseUrl = (process.env.SITE_URL || "https://fixappliancecodes.com").replace(/\/$/, "");
+const policyUpdatedAt = "2026-02-20";
 
 if (!existsSync(dataPath)) {
   throw new Error("Missing data/error-codes.json. Run `npm run seed` first.");
@@ -71,6 +72,7 @@ function nav() {
 }
 
 function footer() {
+  const year = new Date().getFullYear();
   return `
     <footer>
       <div class="wrap">
@@ -83,7 +85,7 @@ function footer() {
           <a href="/editorial-policy">Editorial Policy</a>
           <a href="/contact">Contact</a>
         </div>
-        <small>© 2026 FixApplianceCodes.com · Troubleshooting guidance only. Always follow official safety manuals.</small>
+        <small>© ${year} FixApplianceCodes.com · Troubleshooting guidance only. Always follow official safety manuals.</small>
       </div>
     </footer>
   `;
@@ -107,13 +109,64 @@ function layout({ title, description, canonicalPath, content, jsonLd = [] }) {
     <meta property="og:description" content="${escapeHtml(description)}" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="${canonicalUrl}" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <link rel="stylesheet" href="/assets/styles.css" />
     ${ldScripts}
   </head>
   <body>
     ${nav()}
     ${content}
+    <div id="cookie-consent" class="cookie-consent" hidden>
+      <p>This site uses cookies for essential functionality and, with your permission, for analytics and advertising. See our <a href="/cookies">Cookie Policy</a>.</p>
+      <div class="cookie-actions">
+        <button id="cookie-accept" type="button">Accept all</button>
+        <button id="cookie-reject" type="button" class="btn-muted">Reject non-essential</button>
+      </div>
+    </div>
     ${footer()}
+    <script>
+      (function () {
+        var key = 'fac_cookie_consent_v1';
+        var banner = document.getElementById('cookie-consent');
+        var accept = document.getElementById('cookie-accept');
+        var reject = document.getElementById('cookie-reject');
+
+        function setConsent(state) {
+          localStorage.setItem(key, state);
+          document.documentElement.setAttribute('data-cookie-consent', state);
+          if (banner) banner.hidden = true;
+        }
+
+        function openBanner() {
+          if (banner) banner.hidden = false;
+        }
+
+        var saved = localStorage.getItem(key);
+        if (saved === 'accepted' || saved === 'rejected') {
+          document.documentElement.setAttribute('data-cookie-consent', saved);
+        } else {
+          openBanner();
+        }
+
+        if (accept) {
+          accept.addEventListener('click', function () {
+            setConsent('accepted');
+          });
+        }
+
+        if (reject) {
+          reject.addEventListener('click', function () {
+            setConsent('rejected');
+          });
+        }
+
+        document.querySelectorAll('[data-open-consent]').forEach(function (button) {
+          button.addEventListener('click', function () {
+            openBanner();
+          });
+        });
+      })();
+    </script>
   </body>
 </html>`;
 }
@@ -149,15 +202,9 @@ const homeHtml = layout({
         </div>
       </section>
 
-      <section class="grid">
-        <div class="card">
-          <h2>Top matches</h2>
-          <ul id="results" class="list"></ul>
-        </div>
-        <aside>
-          <div class="ad-slot">Advertisement</div>
-          <div class="ad-slot tall" style="margin-top:1rem;">Advertisement</div>
-        </aside>
+      <section class="card">
+        <h2>Top matches</h2>
+        <ul id="results" class="list"></ul>
       </section>
 
       <section class="card" style="margin-top:1rem;">
@@ -181,7 +228,6 @@ const homeHtml = layout({
             </ul>
           </div>
         </div>
-        <div class="ad-slot banner">Advertisement</div>
       </section>
     </main>
 
@@ -377,7 +423,6 @@ for (const entry of entries) {
           </article>
 
           <aside>
-            <div class="ad-slot">Advertisement</div>
             <div class="card" style="margin-top:1rem;">
               <h3>Related pages</h3>
               <ul class="list">
@@ -396,7 +441,6 @@ for (const entry of entries) {
                   .join("")}
               </ul>
             </div>
-            <div class="ad-slot tall" style="margin-top:1rem;">Advertisement</div>
           </aside>
         </section>
       </main>
@@ -443,25 +487,19 @@ for (const [brandSlug, items] of Object.entries(byBrand)) {
           <h1>${escapeHtml(slugLabel(brandSlug))} error code guides</h1>
           <p class="muted">Model-family pages with structured troubleshooting steps.</p>
         </section>
-        <section class="grid">
-          <div class="card">
-            <ul class="list">
-              ${items
-                .slice()
-                .sort((a, b) => a.appliance.localeCompare(b.appliance) || a.code.localeCompare(b.code))
-                .map(
-                  (item) =>
-                    `<li class="item"><a href="/${item.slug}"><strong>${escapeHtml(item.code)}</strong> · ${escapeHtml(
-                      slugLabel(item.applianceSlug)
-                    )} · ${escapeHtml(item.modelFamily)}</a><div class="muted">${escapeHtml(item.summary)}</div></li>`
-                )
-                .join("")}
-            </ul>
-          </div>
-          <aside>
-            <div class="ad-slot">Advertisement</div>
-            <div class="ad-slot tall" style="margin-top:1rem;">Advertisement</div>
-          </aside>
+        <section class="card">
+          <ul class="list">
+            ${items
+              .slice()
+              .sort((a, b) => a.appliance.localeCompare(b.appliance) || a.code.localeCompare(b.code))
+              .map(
+                (item) =>
+                  `<li class="item"><a href="/${item.slug}"><strong>${escapeHtml(item.code)}</strong> · ${escapeHtml(
+                    slugLabel(item.applianceSlug)
+                  )} · ${escapeHtml(item.modelFamily)}</a><div class="muted">${escapeHtml(item.summary)}</div></li>`
+              )
+              .join("")}
+          </ul>
         </section>
       </main>
     `
@@ -481,25 +519,19 @@ for (const [applianceSlug, items] of Object.entries(byAppliance)) {
           <h1>${escapeHtml(slugLabel(applianceSlug))} error code guides</h1>
           <p class="muted">Brand and model-family specific troubleshooting pages.</p>
         </section>
-        <section class="grid">
-          <div class="card">
-            <ul class="list">
-              ${items
-                .slice()
-                .sort((a, b) => a.brand.localeCompare(b.brand) || a.code.localeCompare(b.code))
-                .map(
-                  (item) =>
-                    `<li class="item"><a href="/${item.slug}"><strong>${escapeHtml(item.brand)}</strong> · ${escapeHtml(
-                      item.code
-                    )} · ${escapeHtml(item.modelFamily)}</a><div class="muted">${escapeHtml(item.summary)}</div></li>`
-                )
-                .join("")}
-            </ul>
-          </div>
-          <aside>
-            <div class="ad-slot">Advertisement</div>
-            <div class="ad-slot tall" style="margin-top:1rem;">Advertisement</div>
-          </aside>
+        <section class="card">
+          <ul class="list">
+            ${items
+              .slice()
+              .sort((a, b) => a.brand.localeCompare(b.brand) || a.code.localeCompare(b.code))
+              .map(
+                (item) =>
+                  `<li class="item"><a href="/${item.slug}"><strong>${escapeHtml(item.brand)}</strong> · ${escapeHtml(
+                    item.code
+                  )} · ${escapeHtml(item.modelFamily)}</a><div class="muted">${escapeHtml(item.summary)}</div></li>`
+              )
+              .join("")}
+          </ul>
         </section>
       </main>
     `
@@ -545,10 +577,12 @@ simplePage({
   path: "privacy",
   title: "Privacy Policy",
   body: `
-    <p>We collect basic analytics and ad delivery telemetry to operate and improve the website.</p>
-    <p>Third-party advertising partners may use cookies or similar technologies subject to their own policies.</p>
-    <p>We do not sell personal data directly. For ad technology and consent controls, see our cookie policy.</p>
-    <p>Contact us to request data access or deletion requests where applicable.</p>
+    <p><strong>Last updated:</strong> ${policyUpdatedAt}</p>
+    <p>We process limited technical data (for example IP address, user-agent, page URLs, and timestamps) to operate, secure, and improve this website.</p>
+    <p>If advertising is enabled, third-party partners (including Google) may process identifiers and cookie data for ad delivery, fraud prevention, frequency capping, measurement, and (where consented) personalization.</p>
+    <p>We do not knowingly collect special-category personal data and we do not sell personal data directly.</p>
+    <p>You can request access, correction, deletion, or objection rights by contacting <a href="mailto:flip2dip@gmail.com">flip2dip@gmail.com</a>.</p>
+    <p>For details on Google partner data use, see <a href="https://www.google.com/policies/privacy/partners/" rel="nofollow">How Google uses information from sites or apps that use our services</a>.</p>
   `
 });
 
@@ -556,9 +590,18 @@ simplePage({
   path: "cookies",
   title: "Cookie Policy",
   body: `
-    <p>FixApplianceCodes.com uses cookies and similar technologies for site functionality, analytics, and advertising.</p>
-    <p>Advertising partners may use cookies to show more relevant ads and measure campaign performance.</p>
-    <p>You can control cookies from your browser settings and applicable consent prompts provided by your region.</p>
+    <p><strong>Last updated:</strong> ${policyUpdatedAt}</p>
+    <p>We use storage technologies (cookies/local storage) for: (1) strictly necessary functions, and optionally (2) analytics and (3) advertising.</p>
+    <h2>Strictly necessary</h2>
+    <p>Required to provide core site functionality and security. These do not require consent in many jurisdictions.</p>
+    <h2>Analytics</h2>
+    <p>Help us understand site usage and improve content quality.</p>
+    <h2>Advertising</h2>
+    <p>Used by ad partners for delivery, measurement, fraud prevention, and (if allowed) personalization.</p>
+    <h2>Consent and withdrawal</h2>
+    <p>Visitors in regions requiring consent are asked to choose before non-essential cookies are used. You can change your choice at any time:</p>
+    <p><button type="button" data-open-consent>Open cookie choices</button></p>
+    <p>You can also manage storage via browser settings. Blocking cookies may affect some features.</p>
   `
 });
 
@@ -566,9 +609,11 @@ simplePage({
   path: "terms",
   title: "Terms of Use",
   body: `
-    <p>FixApplianceCodes.com provides informational troubleshooting content only and does not provide warranties of repair outcomes.</p>
-    <p>Always follow official manufacturer safety instructions and local electrical/mechanical codes.</p>
-    <p>You are responsible for your own repair decisions and actions.</p>
+    <p><strong>Last updated:</strong> ${policyUpdatedAt}</p>
+    <p>FixApplianceCodes.com provides informational troubleshooting content only. No warranty is provided for completeness, accuracy, or repair outcomes.</p>
+    <p>You are responsible for your own actions and safety decisions. Always follow manufacturer instructions and local legal/safety requirements.</p>
+    <p>This site is not affiliated with, endorsed by, or sponsored by appliance manufacturers referenced on the site.</p>
+    <p>Unauthorized copying or bulk republication of our content is prohibited.</p>
   `
 });
 
@@ -576,9 +621,10 @@ simplePage({
   path: "disclaimer",
   title: "Disclaimer",
   body: `
-    <p>Content on FixApplianceCodes.com is provided for general informational purposes only.</p>
-    <p>We are not the manufacturer of listed products and do not provide licensed repair, legal, or safety certification services.</p>
-    <p>Always consult official manuals and qualified technicians before attempting repairs involving electricity, gas, heat, or water systems.</p>
+    <p><strong>Last updated:</strong> ${policyUpdatedAt}</p>
+    <p>Content on FixApplianceCodes.com is general information, not professional repair, legal, engineering, or safety advice.</p>
+    <p>Stop immediately and contact a licensed professional for gas smells, electrical burning odor, overheating, active leaks, smoke, or repeated breaker trips.</p>
+    <p>Always consult official manuals and qualified technicians before attempting repairs involving electricity, gas, heat, refrigeration systems, or water lines.</p>
   `
 });
 
@@ -643,10 +689,6 @@ ${allPaths
 
 writeFileSync(resolve("dist/sitemap.xml"), sitemap);
 writeFileSync(resolve("dist/robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${baseUrl}/sitemap.xml\n`);
-writeFileSync(
-  resolve("dist/ads.txt"),
-  "# Add your ads.txt lines after AdSense approval, e.g.\n# google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0\n"
-);
 writeFileSync(
   resolve("dist/404.html"),
   layout({

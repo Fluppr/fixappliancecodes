@@ -5,9 +5,10 @@ FixApplianceCodes.com is a static site generator for an ad-optimized appliance/d
 ## Features
 - Programmatic generation of hundreds of troubleshooting pages
 - No user-facing LLM dependency
-- Ad slot placeholders and high-intent page layout
+- High-intent troubleshooting layout with clean, non-deceptive UX
 - SEO files (`sitemap.xml`, `robots.txt`, JSON-LD)
 - Policy pages for monetization trust and compliance
+- Cookie consent banner with accept/reject controls and persisted preference
 
 ## Requirements
 - Node.js 20+
@@ -59,3 +60,11 @@ Fields include:
 
 ## Important
 This site provides troubleshooting guidance and is not a substitute for official manufacturer safety guidance.
+
+## AdSense & compliance review checklist
+- Ensure policy pages are live and accessible: `/privacy`, `/cookies`, `/terms`, `/disclaimer`, `/editorial-policy`, `/contact`.
+- Confirm consent flow appears for first-time visitors and allows rejecting non-essential cookies.
+- Use a Google-certified CMP for EEA/UK/Switzerland traffic when enabling AdSense ads personalization.
+- Add a valid `ads.txt` file only after your AdSense publisher ID is issued.
+- Keep content original, avoid deceptive navigation, and do not encourage ad clicks.
+- Re-run `npm run build` before each deploy and manually spot-check key templates in `dist/`.
