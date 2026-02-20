@@ -6,6 +6,7 @@ const dataPath = resolve("data/error-codes.json");
 const cssPath = resolve("src/styles.css");
 const baseUrl = (process.env.SITE_URL || "https://fixappliancecodes.com").replace(/\/$/, "");
 const policyUpdatedAt = "2026-02-20";
+const adsensePublisherId = process.env.ADSENSE_PUBLISHER_ID || "pub-8545823582417489";
 
 if (!existsSync(dataPath)) {
   throw new Error("Missing data/error-codes.json. Run `npm run seed` first.");
@@ -690,6 +691,7 @@ ${allPaths
 
 writeFileSync(resolve("dist/sitemap.xml"), sitemap);
 writeFileSync(resolve("dist/robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${baseUrl}/sitemap.xml\n`);
+writeFileSync(resolve("dist/ads.txt"), `google.com, ${adsensePublisherId}, DIRECT, f08c47fec0942fa0\n`);
 writeFileSync(
   resolve("dist/404.html"),
   layout({
