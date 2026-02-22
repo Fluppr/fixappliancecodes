@@ -19,6 +19,9 @@ npm install
 npm run build
 ```
 
+Optional env vars:
+- `GA_MEASUREMENT_ID` (default: `G-TF1KR11FSD`)
+
 Generated site output is in `dist/` and can be deployed to Netlify, Vercel static hosting, Cloudflare Pages, GitHub Pages, or any static server.
 
 ## Automatic deploy to Cloudflare Pages

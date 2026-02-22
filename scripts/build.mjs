@@ -7,6 +7,7 @@ const cssPath = resolve("src/styles.css");
 const baseUrl = (process.env.SITE_URL || "https://fixappliancecodes.com").replace(/\/$/, "");
 const policyUpdatedAt = "2026-02-20";
 const adsensePublisherId = process.env.ADSENSE_PUBLISHER_ID || "pub-8545823582417489";
+const analyticsMeasurementId = process.env.GA_MEASUREMENT_ID || "G-TF1KR11FSD";
 
 if (!existsSync(dataPath)) {
   throw new Error("Missing data/error-codes.json. Run `npm run seed` first.");
@@ -97,10 +98,27 @@ function layout({ title, description, canonicalPath, content, jsonLd = [] }) {
   const ldScripts = jsonLd
     .map((schema) => `<script type="application/ld+json">${JSON.stringify(schema)}</script>`)
     .join("\n");
+  const analyticsScripts = analyticsMeasurementId
+    ? `
+    <script async src="https://www.googletagmanager.com/gtag/js?id=${analyticsMeasurementId}"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('consent', 'default', {
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: 'denied'
+      });
+      gtag('js', new Date());
+      gtag('config', '${analyticsMeasurementId}');
+    </script>`
+    : "";
 
   return `<!doctype html>
 <html lang="en">
   <head>
+    ${analyticsScripts}
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>${escapeHtml(title)}</title>
@@ -136,6 +154,23 @@ function layout({ title, description, canonicalPath, content, jsonLd = [] }) {
         function setConsent(state) {
           localStorage.setItem(key, state);
           document.documentElement.setAttribute('data-cookie-consent', state);
+          if (typeof window.gtag === 'function') {
+            if (state === 'accepted') {
+              window.gtag('consent', 'update', {
+                ad_storage: 'granted',
+                ad_user_data: 'granted',
+                ad_personalization: 'granted',
+                analytics_storage: 'granted'
+              });
+            } else {
+              window.gtag('consent', 'update', {
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+                analytics_storage: 'denied'
+              });
+            }
+          }
           if (banner) banner.hidden = true;
         }
 
@@ -145,7 +180,7 @@ function layout({ title, description, canonicalPath, content, jsonLd = [] }) {
 
         var saved = localStorage.getItem(key);
         if (saved === 'accepted' || saved === 'rejected') {
-          document.documentElement.setAttribute('data-cookie-consent', saved);
+          setConsent(saved);
         } else {
           openBanner();
         }
