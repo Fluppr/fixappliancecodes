@@ -869,6 +869,8 @@ ${allPaths
 writeFileSync(resolve("dist/sitemap.xml"), sitemap);
 writeFileSync(resolve("dist/robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${baseUrl}/sitemap.xml\n`);
 writeFileSync(resolve("dist/ads.txt"), `google.com, ${adsensePublisherId}, DIRECT, f08c47fec0942fa0\n`);
+const wwwUrl = baseUrl.replace(/^(https?:\/\/)(?!www\.)/, "$1www.");
+writeFileSync(resolve("dist/_redirects"), `${wwwUrl}/* ${baseUrl}/:splat 301\n`);
 writeFileSync(
   resolve("dist/404.html"),
   layout({
