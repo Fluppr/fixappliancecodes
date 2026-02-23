@@ -1,5 +1,6 @@
 import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { articles } from "./articles-data.mjs";
 
 const distDir = resolve("dist");
 const dataPath = resolve("data/error-codes.json");
@@ -67,6 +68,7 @@ function nav() {
           <a href="/">Home</a>
           <a href="/brands">Brands</a>
           <a href="/appliances">Appliances</a>
+          <a href="/guides">Guides</a>
           <a href="/editorial-policy">Editorial Policy</a>
           <a href="/contact">Contact</a>
         </nav>
@@ -268,6 +270,15 @@ const homeHtml = layout({
             </ul>
           </div>
         </div>
+      </section>
+
+      <section class="card" style="margin-top:1rem;">
+        <h2>Repair &amp; troubleshooting guides</h2>
+        <ul class="list">
+          ${articles
+            .map((a) => `<li class="item"><a href="/guides/${a.slug}"><strong>${escapeHtml(a.title)}</strong></a><div class="muted">${escapeHtml(a.description)}</div></li>`)
+            .join("")}
+        </ul>
       </section>
     </main>
 
@@ -516,6 +527,112 @@ for (const entry of entries) {
   writePage(entry.slug, page);
 }
 
+for (const article of articles) {
+  const otherArticles = articles.filter((a) => a.slug !== article.slug);
+  const sectionsHtml = article.sections
+    .map((s) => `<h2>${escapeHtml(s.heading)}</h2>${s.body}`)
+    .join("\n");
+  const faqHtml = article.faq
+    .map((item) => `<h3>${escapeHtml(item.q)}</h3><p>${escapeHtml(item.a)}</p>`)
+    .join("\n");
+
+  const page = layout({
+    title: article.title,
+    description: article.description,
+    canonicalPath: `/guides/${article.slug}`,
+    content: `
+      <main class="wrap article-page">
+        <div class="breadcrumb">
+          <a href="/">Home</a> / <a href="/guides">Guides</a> / ${escapeHtml(article.title)}
+        </div>
+        <section class="grid">
+          <article class="article-main">
+            <h1>${escapeHtml(article.title)}</h1>
+            <p class="meta-row"><span class="verified">Editorially reviewed</span>Updated ${article.datePublished}</p>
+            <div class="quick-answer">
+              <strong>Overview:</strong> ${escapeHtml(article.heroText)}
+            </div>
+            ${sectionsHtml}
+            <h2>Frequently asked questions</h2>
+            ${faqHtml}
+          </article>
+          <aside>
+            <div class="card" style="margin-top:1rem;">
+              <h3>More guides</h3>
+              <ul class="list">
+                ${otherArticles
+                  .slice(0, 8)
+                  .map((a) => `<li class="item"><a href="/guides/${a.slug}">${escapeHtml(a.title)}</a></li>`)
+                  .join("")}
+              </ul>
+            </div>
+            <div class="card" style="margin-top:1rem;">
+              <h3>Browse by appliance</h3>
+              <ul class="list">
+                ${Object.keys(byAppliance)
+                  .map((slug) => `<li class="item"><a href="/appliances/${slug}">${escapeHtml(slugLabel(slug))}</a></li>`)
+                  .join("")}
+              </ul>
+            </div>
+          </aside>
+        </section>
+      </main>
+    `,
+    jsonLd: [
+      {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        headline: article.title,
+        description: article.description,
+        datePublished: article.datePublished,
+        dateModified: article.datePublished,
+        author: {
+          "@type": "Organization",
+          name: "FixApplianceCodes.com Editorial Team"
+        },
+        mainEntityOfPage: `${baseUrl}/guides/${article.slug}`
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: article.faq.map((item) => ({
+          "@type": "Question",
+          name: item.q,
+          acceptedAnswer: { "@type": "Answer", text: item.a }
+        }))
+      }
+    ]
+  });
+
+  writePage(`guides/${article.slug}`, page);
+}
+
+const guidesPage = layout({
+  title: "Appliance Repair & Troubleshooting Guides",
+  description: "In-depth how-to guides covering common appliance problems, error codes, resets, and repairs across all major brands.",
+  canonicalPath: "/guides",
+  content: `
+    <main class="wrap">
+      <section class="hero">
+        <h1>Appliance repair &amp; troubleshooting guides</h1>
+        <p class="muted">In-depth how-to articles covering common problems, error code explanations, resets, and step-by-step repairs.</p>
+      </section>
+      <section class="card">
+        <ul class="list">
+          ${articles
+            .map(
+              (a) =>
+                `<li class="item"><a href="/guides/${a.slug}"><strong>${escapeHtml(a.title)}</strong></a>` +
+                `<div class="muted">${escapeHtml(a.description)}</div></li>`
+            )
+            .join("")}
+        </ul>
+      </section>
+    </main>
+  `
+});
+writePage("guides", guidesPage);
+
 for (const [brandSlug, items] of Object.entries(byBrand)) {
   const page = layout({
     title: `${slugLabel(brandSlug)} Error Code Guides`,
@@ -715,6 +832,8 @@ const allPaths = [
   "/appliances",
   ...Object.keys(byBrand).map((slug) => `/brands/${slug}`),
   ...Object.keys(byAppliance).map((slug) => `/appliances/${slug}`),
+  "/guides",
+  ...articles.map((a) => `/guides/${a.slug}`),
   ...entries.map((entry) => `/${entry.slug}`)
 ];
 
