@@ -15,7 +15,20 @@ const brands = [
   { name: "Kenmore", slug: "kenmore", appliances: ["washer", "dryer", "dishwasher", "refrigerator"] },
   { name: "Electrolux", slug: "electrolux", appliances: ["washer", "dryer", "dishwasher", "refrigerator", "oven"] },
   { name: "Haier", slug: "haier", appliances: ["washer", "dryer", "refrigerator", "ac"] },
-  { name: "Midea", slug: "midea", appliances: ["washer", "dishwasher", "ac", "refrigerator"] }
+  { name: "Midea", slug: "midea", appliances: ["washer", "dishwasher", "ac", "refrigerator"] },
+  // High US market share
+  { name: "Amana", slug: "amana", appliances: ["washer", "dryer", "dishwasher", "refrigerator", "ac"] },
+  { name: "Hotpoint", slug: "hotpoint", appliances: ["washer", "dryer", "dishwasher", "refrigerator", "oven"] },
+  // Strong in specific appliance categories
+  { name: "Miele", slug: "miele", appliances: ["washer", "dryer", "dishwasher", "refrigerator", "oven"] },
+  { name: "Fisher & Paykel", slug: "fisher-paykel", appliances: ["washer", "dryer", "dishwasher", "refrigerator"] },
+  { name: "Thermador", slug: "thermador", appliances: ["dishwasher", "refrigerator", "oven"] },
+  // European brands
+  { name: "AEG", slug: "aeg", appliances: ["washer", "dryer", "dishwasher", "refrigerator", "oven"] },
+  { name: "Zanussi", slug: "zanussi", appliances: ["washer", "dryer", "dishwasher", "refrigerator", "oven"] },
+  { name: "Beko", slug: "beko", appliances: ["washer", "dryer", "dishwasher", "refrigerator", "oven"] },
+  { name: "Indesit", slug: "indesit", appliances: ["washer", "dryer", "dishwasher", "refrigerator", "oven"] },
+  { name: "Smeg", slug: "smeg", appliances: ["dishwasher", "refrigerator", "oven"] }
 ];
 
 const modelFamilies = ["Series 100", "Series 200", "Series 300"];
