@@ -7,6 +7,7 @@
   "scripts": {
     "seed": "node scripts/generate-seed.mjs",
     "build": "npm run seed && node scripts/build.mjs",
+    "preview": "npm run build && npx serve dist",
     "clean": "node -e \"import('node:fs').then(fs=>fs.rmSync('dist',{recursive:true,force:true}))\""
   },
   "engines": {

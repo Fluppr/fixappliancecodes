@@ -4,6 +4,7 @@ import { resolve } from "node:path";
 const distDir = resolve("dist");
 const dataPath = resolve("data/error-codes.json");
 const cssPath = resolve("src/styles.css");
+const faviconPath = resolve("src/favicon.svg");
 const baseUrl = (process.env.SITE_URL || "https://fixappliancecodes.com").replace(/\/$/, "");
 const policyUpdatedAt = "2026-02-20";
 const adsensePublisherId = process.env.ADSENSE_PUBLISHER_ID || "pub-8545823582417489";
@@ -21,6 +22,7 @@ if (!Array.isArray(entries) || entries.length === 0) {
 rmSync(distDir, { recursive: true, force: true });
 mkdirSync(resolve("dist/assets"), { recursive: true });
 copyFileSync(cssPath, resolve("dist/assets/styles.css"));
+copyFileSync(faviconPath, resolve("dist/favicon.svg"));
 
 const byBrand = groupBy(entries, (entry) => entry.brandSlug);
 const byAppliance = groupBy(entries, (entry) => entry.applianceSlug);
@@ -123,6 +125,7 @@ function layout({ title, description, canonicalPath, content, jsonLd = [] }) {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>${escapeHtml(title)}</title>
     <meta name="description" content="${escapeHtml(description)}" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href="${canonicalUrl}" />
     <meta property="og:title" content="${escapeHtml(title)}" />
     <meta property="og:description" content="${escapeHtml(description)}" />
