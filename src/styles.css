@@ -413,3 +413,94 @@ footer .links {
     min-height: 42px;
   }
 }
+
+/* ---- Tabs ---- */
+.tab-bar {
+  display: flex;
+  gap: 0.3rem;
+  border-bottom: 2px solid var(--line);
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+.tab-btn {
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  color: var(--muted);
+  padding: 0.5rem 0.9rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 8px 8px 0 0;
+}
+.tab-btn:hover { color: var(--text); background: var(--bg); filter: none; }
+.tab-btn[aria-selected="true"] { color: var(--brand); border-bottom-color: var(--brand); background: none; filter: none; }
+.tab-panel[hidden] { display: none; }
+
+/* ---- Brand chips ---- */
+.chip-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.35rem 0.85rem;
+  background: #fff;
+  color: var(--text);
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+.chip:hover { border-color: var(--brand); color: var(--brand); text-decoration: none; }
+.chip-count { color: var(--muted); font-size: 0.8rem; }
+
+/* ---- Appliance tiles ---- */
+.appliance-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+}
+.appliance-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 0.9rem 0.5rem;
+  background: #fff;
+  color: var(--text);
+  text-decoration: none;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.appliance-tile:hover { border-color: var(--brand); color: var(--brand); text-decoration: none; }
+.appliance-tile small { font-weight: 400; color: var(--muted); font-size: 0.82rem; }
+
+/* ---- Guide grid ---- */
+.guide-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.guide-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.85rem;
+  background: #fff;
+}
+.guide-card strong { font-size: 0.95rem; }
+.guide-card p { margin: 0; font-size: 0.88rem; }
+
+@media (max-width: 640px) {
+  .appliance-grid { grid-template-columns: repeat(2, 1fr); }
+  .guide-grid { grid-template-columns: 1fr; }
+}

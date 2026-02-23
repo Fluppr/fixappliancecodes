@@ -238,45 +238,40 @@ const homeHtml = layout({
         <h1>Find the exact fix for your appliance error code</h1>
         <p class="muted">Search by brand, appliance, or code. No chatbots. Fast, structured troubleshooting pages.</p>
         <div class="search card">
-          <input id="q" type="text" placeholder="Try: LG washer OE" />
+          <input id="q" type="text" placeholder="Try: LG washer OE" aria-label="Search error codes" />
           <select id="brandFilter"><option value="">All brands</option></select>
           <select id="applianceFilter"><option value="">All appliances</option></select>
         </div>
+        <p id="search-hint" class="muted" style="margin:0.6rem 0 0;font-size:0.92rem;">Start typing above, or browse by brand and appliance below.</p>
       </section>
 
-      <section class="card">
+      <section class="card" id="results-section" hidden>
         <h2>Top matches</h2>
         <ul id="results" class="list"></ul>
       </section>
 
       <section class="card" style="margin-top:1rem;">
-        <h2>Popular entry points</h2>
-        <div class="columns">
-          <div>
-            <h3>By brand</h3>
-            <ul class="list">
-              ${Object.keys(byBrand)
-                .slice(0, 10)
-                .map((brandSlug) => `<li class="item"><a href="/brands/${brandSlug}">${escapeHtml(slugLabel(brandSlug))} (${byBrand[brandSlug].length})</a></li>`)
-                .join("")}
-            </ul>
+        <div class="tab-bar" role="tablist">
+          <button class="tab-btn" role="tab" id="tab-brands" aria-selected="true" aria-controls="panel-brands">Brands</button>
+          <button class="tab-btn" role="tab" id="tab-appliances" aria-selected="false" aria-controls="panel-appliances">Appliances</button>
+        </div>
+        <div id="panel-brands" role="tabpanel" class="tab-panel" aria-labelledby="tab-brands">
+          <div class="chip-grid">
+            ${Object.keys(byBrand).sort().map((brandSlug) => `<a class="chip" href="/brands/${brandSlug}">${escapeHtml(slugLabel(brandSlug))} <span class="chip-count">${byBrand[brandSlug].length}</span></a>`).join("")}
           </div>
-          <div>
-            <h3>By appliance</h3>
-            <ul class="list">
-              ${Object.keys(byAppliance)
-                .map((applianceSlug) => `<li class="item"><a href="/appliances/${applianceSlug}">${escapeHtml(slugLabel(applianceSlug))} (${byAppliance[applianceSlug].length})</a></li>`)
-                .join("")}
-            </ul>
+        </div>
+        <div id="panel-appliances" role="tabpanel" class="tab-panel" aria-labelledby="tab-appliances" hidden>
+          <div class="appliance-grid">
+            ${Object.keys(byAppliance).sort().map((applianceSlug) => `<a class="appliance-tile" href="/appliances/${applianceSlug}">${escapeHtml(slugLabel(applianceSlug))}<small>${byAppliance[applianceSlug].length} codes</small></a>`).join("")}
           </div>
         </div>
       </section>
 
       <section class="card" style="margin-top:1rem;">
         <h2>Repair &amp; troubleshooting guides</h2>
-        <ul class="list">
+        <ul class="guide-grid">
           ${articles
-            .map((a) => `<li class="item"><a href="/guides/${a.slug}"><strong>${escapeHtml(a.title)}</strong></a><div class="muted">${escapeHtml(a.description)}</div></li>`)
+            .map((a) => `<li class="guide-card"><a href="/guides/${a.slug}"><strong>${escapeHtml(a.title)}</strong></a><p class="muted">${escapeHtml(a.description)}</p></li>`)
             .join("")}
         </ul>
       </section>
@@ -288,6 +283,22 @@ const homeHtml = layout({
       const brandFilter = document.getElementById('brandFilter');
       const applianceFilter = document.getElementById('applianceFilter');
       const results = document.getElementById('results');
+      const resSection = document.getElementById('results-section');
+      const searchHint = document.getElementById('search-hint');
+
+      document.querySelectorAll('.tab-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.tab-btn').forEach(function(b) {
+            b.setAttribute('aria-selected', 'false');
+          });
+          btn.setAttribute('aria-selected', 'true');
+          var panelId = btn.getAttribute('aria-controls');
+          document.querySelectorAll('.tab-panel').forEach(function(p) {
+            p.hidden = true;
+          });
+          document.getElementById(panelId).hidden = false;
+        });
+      });
 
       const brands = [...new Set(index.map(i => i.brand))].sort();
       const appliances = [...new Set(index.map(i => i.appliance))].sort();
@@ -318,6 +329,15 @@ const homeHtml = layout({
         const queryTokens = needle ? needle.split(/\\s+/).filter(Boolean) : [];
         const selectedBrand = brandFilter.value;
         const selectedAppliance = applianceFilter.value;
+
+        const hasQuery = queryTokens.length > 0 || selectedBrand || selectedAppliance;
+        if (!hasQuery) {
+          if (resSection) resSection.hidden = true;
+          if (searchHint) searchHint.hidden = false;
+          return;
+        }
+        if (resSection) resSection.hidden = false;
+        if (searchHint) searchHint.hidden = true;
 
         const matched = index
           .filter(item => !selectedBrand || item.brand === selectedBrand)
