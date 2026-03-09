@@ -434,7 +434,7 @@ for (const entry of entries) {
 
   const page = layout({
     title: entry.title,
-    description: `${entry.summary} Fast troubleshooting steps, causes, and safety notes for ${entry.brand} ${entry.appliance} ${entry.modelFamily}.`,
+    description: `${entry.summary} Troubleshooting steps, causes, and safety notes for ${entry.brand} ${entry.appliance}.`,
     canonicalPath: `/${entry.slug}`,
     content: `
       <main class="wrap article-page">
@@ -444,7 +444,7 @@ for (const entry of entries) {
         <section class="grid">
           <article class="article-main">
             <h1>${escapeHtml(entry.title)}</h1>
-            <p class="meta-row"><span class="verified">Editorially reviewed</span>Updated ${entry.updatedAt} · Model family: ${escapeHtml(entry.modelFamily)}</p>
+            <p class="meta-row"><span class="verified">Editorially reviewed</span>Updated ${entry.updatedAt}</p>
             <div class="quick-answer">
               <strong>Quick answer:</strong> ${escapeHtml(entry.summary)}
             </div>
@@ -457,6 +457,8 @@ for (const entry of entries) {
               <span class="badge">Code ${escapeHtml(entry.code)}</span>
               <span class="badge ${escapeHtml(entry.severity)}">${escapeHtml(entry.severity)} severity</span>
             </div>
+
+            ${entry.brandNote ? `<div class="brand-note"><strong>${escapeHtml(entry.brand)} models:</strong> ${escapeHtml(entry.brandNote)}</div>` : ""}
 
             <h2>Common causes</h2>
             <ul>
@@ -673,7 +675,7 @@ for (const [brandSlug, items] of Object.entries(byBrand)) {
                 (item) =>
                   `<li class="item"><a href="/${item.slug}"><strong>${escapeHtml(item.code)}</strong> · ${escapeHtml(
                     slugLabel(item.applianceSlug)
-                  )} · ${escapeHtml(item.modelFamily)}</a><div class="muted">${escapeHtml(item.summary)}</div></li>`
+                  )}</a><div class="muted">${escapeHtml(item.summary)}</div></li>`
               )
               .join("")}
           </ul>
@@ -688,13 +690,13 @@ for (const [brandSlug, items] of Object.entries(byBrand)) {
 for (const [applianceSlug, items] of Object.entries(byAppliance)) {
   const page = layout({
     title: `${slugLabel(applianceSlug)} Error Code Guides`,
-    description: `Browse ${items.length} ${slugLabel(applianceSlug)} error code pages by brand and model family.`,
+    description: `Browse ${items.length} ${slugLabel(applianceSlug)} error code pages by brand.`,
     canonicalPath: `/appliances/${applianceSlug}`,
     content: `
       <main class="wrap">
         <section class="hero">
           <h1>${escapeHtml(slugLabel(applianceSlug))} error code guides</h1>
-          <p class="muted">Brand and model-family specific troubleshooting pages.</p>
+          <p class="muted">Brand-specific troubleshooting pages.</p>
         </section>
         <section class="card">
           <ul class="list">
@@ -705,7 +707,7 @@ for (const [applianceSlug, items] of Object.entries(byAppliance)) {
                 (item) =>
                   `<li class="item"><a href="/${item.slug}"><strong>${escapeHtml(item.brand)}</strong> · ${escapeHtml(
                     item.code
-                  )} · ${escapeHtml(item.modelFamily)}</a><div class="muted">${escapeHtml(item.summary)}</div></li>`
+                  )}</a><div class="muted">${escapeHtml(item.summary)}</div></li>`
               )
               .join("")}
           </ul>
@@ -733,9 +735,18 @@ simplePage({
   path: "about",
   title: "About FixApplianceCodes.com",
   body: `
-    <p>FixApplianceCodes.com publishes structured troubleshooting guides for appliance and device error codes.</p>
-    <p>Our goal is to help users identify likely causes quickly and choose a safe next action.</p>
-    <p>FixApplianceCodes.com is ad-supported. Ads never alter troubleshooting recommendations.</p>
+    <p>FixApplianceCodes.com is a reference site for home appliance error code troubleshooting. We cover washers, dryers, dishwashers, refrigerators, ovens, and AC units from all major brands — Samsung, LG, Whirlpool, GE, Bosch, Frigidaire, Miele, KitchenAid, and more.</p>
+    <h2>What each page covers</h2>
+    <p>Every error code page explains what the fault code means for a specific brand and appliance type, what physical conditions trigger it, a step-by-step diagnostic sequence ordered from most to least likely cause, the tools you would need for each step, and an explicit stop condition — a clear statement of when DIY troubleshooting should end and a licensed technician should be called. Pages also include a severity rating (low, medium, high) and an estimated time to complete the DIY fix.</p>
+    <p>Where the same code has different causes or different access procedures on different brands, this is stated clearly. We include brand-specific access notes — for example, where the pump filter is located on a Samsung front-loader versus a Whirlpool top-loader, or which platform a Kenmore or Hotpoint model actually uses — because this information is what makes a diagnosis actionable rather than generic.</p>
+    <h2>Who it's for</h2>
+    <p>Homeowners who want to understand what their appliance is reporting before deciding whether to attempt a repair, wait for a service call, or escalate to a manufacturer warranty claim. Our pages are not a substitute for a qualified technician, but they help you make a more informed decision and — if you do call a technician — give them a useful starting point.</p>
+    <h2>Safety first</h2>
+    <p>We treat gas, refrigerant, and high-voltage faults conservatively. When a fault code can indicate a failure mode that puts people or property at risk, we say so clearly, and we recommend professional service before any DIY attempt. If in doubt, always call a licensed technician.</p>
+    <h2>Advertising</h2>
+    <p>This site is supported by display advertising served by Google AdSense. No content on this site is sponsored, and advertisers have no influence over troubleshooting recommendations or how any fault is diagnosed.</p>
+    <h2>Accuracy and corrections</h2>
+    <p>Error code meanings can differ between model generations within the same brand. Always cross-reference with your appliance's user manual or the model-number label (usually on the door edge, back panel, or inside the door) when in doubt. If you identify an inaccuracy or want to suggest a correction, email us at <a href="mailto:flip2dip@gmail.com">flip2dip@gmail.com</a>.</p>
   `
 });
 
@@ -743,10 +754,17 @@ simplePage({
   path: "editorial-policy",
   title: "Editorial Policy",
   body: `
-    <p>FixApplianceCodes.com content is generated from structured technical templates and reviewed for clarity, consistency, and safety wording.</p>
-    <p>We avoid copying manufacturer text verbatim and provide generalized troubleshooting pathways.</p>
-    <p>High-risk guidance includes explicit stop conditions and a recommendation to seek licensed service.</p>
-    <p>Update cadence: data is refreshed in periodic release batches with versioned build output.</p>
+    <p>FixApplianceCodes.com publishes troubleshooting guides for appliance error codes. Each page identifies the specific fault condition a code represents, explains the physical causes in plain language, and provides a prioritised sequence of diagnostic steps drawn from appliance service documentation and repair practice.</p>
+    <h2>Accuracy and safety</h2>
+    <p>Every code page includes a severity rating and an explicit stop condition — a clear statement of when DIY troubleshooting should end and a licensed technician should be called. We treat safety-critical faults (gas lines, refrigerant systems, high-voltage components) conservatively: when in doubt, we recommend professional service.</p>
+    <h2>Brand and model coverage</h2>
+    <p>Code meanings vary across brands and appliance generations. Where a code has different causes on different brands, this is stated clearly. We do not apply one brand's diagnosis to another.</p>
+    <h2>Updates</h2>
+    <p>Pages are reviewed and updated when service documentation, field reports, or reader feedback indicates a correction is needed. The date shown on each page reflects the last substantive review.</p>
+    <h2>Advertising</h2>
+    <p>FixApplianceCodes.com is supported by display advertising. Ads are served by Google AdSense and do not influence the troubleshooting content or recommendations on any page.</p>
+    <h2>Contact</h2>
+    <p>To report an error or suggest a correction, email <a href="mailto:flip2dip@gmail.com">flip2dip@gmail.com</a>.</p>
   `
 });
 

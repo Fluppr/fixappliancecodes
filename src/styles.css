@@ -188,6 +188,15 @@ button:hover {
 .badge.medium { background: #fff4e5; color: var(--warn); }
 .badge.high { background: #feecee; color: var(--danger); }
 
+.brand-note {
+  background: var(--brand-soft);
+  border-left: 3px solid var(--brand);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+  font-size: 0.95rem;
+}
+
 .columns {
   display: grid;
   grid-template-columns: 1fr 1fr;
